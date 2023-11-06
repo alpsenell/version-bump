@@ -3,41 +3,49 @@ name: Increment Version
 on:
   push:
     branches:
-      - main # Set to your default branch
+      - main # Adjust to match the default branch of your repository
 
 jobs:
   version-bump:
     runs-on: ubuntu-latest
     steps:
+      # Check out the repository code
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0 # It's important to perform a full depth checkout so that all tags are available for versioning
+          fetch-depth: 0 # Fetch all history for all tags and branches
 
+      # List files in the checked-out repository (for debugging purposes)
+      - name: List files
+        run: ls -lR
+
+      # Set up the Node.js environment
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16' # Set this to the node version you want to use
+          node-version: '16' # Ensure this matches the version you use locally
 
+      # Install your project dependencies
       - name: Install dependencies
         run: npm install
 
+      # Increment the package version
       - name: Bump version
         id: bump_version
         run: |
-          # This assumes you want to bump the patch version
           PACKAGE_VERSION=$(node -p "require('./package.json').version")
           IFS='.' read -ra VERSION_PARTS <<< "$PACKAGE_VERSION"
-          PATCH_VERSION=$((VERSION_PARTS[2]+1))
+          PATCH_VERSION=$((VERSION_PARTS[2] + 1))
           NEW_VERSION="${VERSION_PARTS[0]}.${VERSION_PARTS[1]}.$PATCH_VERSION"
           echo "New version: $NEW_VERSION"
           echo "::set-output name=NEW_VERSION::$NEW_VERSION"
           npm version $NEW_VERSION --no-git-tag-version
 
+      # Commit the updated package.json and push it back to the repository
       - name: Commit and push
         run: |
-          git config --local user.email "alpsenel@outlook.com"
-          git config --local user.name "alpsenel"
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
           git add package.json
           git commit -m "ci: Bump version to ${{ steps.bump_version.outputs.NEW_VERSION }}"
           git push
