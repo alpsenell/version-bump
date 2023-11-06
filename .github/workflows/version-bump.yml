@@ -44,8 +44,8 @@ jobs:
       # Commit the updated package.json and push it back to the repository
       - name: Commit and push
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
+          git config --local user.email "alpsenel@outlook.com"
+          git config --local user.name "alpsenell"
           git add package.json
           git commit -m "ci: Bump version to ${{ steps.bump_version.outputs.NEW_VERSION }}"
-          git push
+          git push https://${{ secrets.GH_ACTION_TOKEN }}@github.com/alpsenell/gh-action-bump-version.git HEAD:main
