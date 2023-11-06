@@ -63,7 +63,7 @@ jobs:
         with:
           node-version: '16'
 
-      - run: git checkout master
+      - run: git checkout main
       - run: |
           git config --global user.email "alpsenel@outlook.com"
           git config --global user.name "alpsenell"
