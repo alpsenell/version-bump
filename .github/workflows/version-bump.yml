@@ -25,10 +25,6 @@ jobs:
         with:
           node-version: '16' # Ensure this matches the version you use locally
 
-      # Install your project dependencies
-      - name: Install dependencies
-        run: npm install
-
       # Increment the package version
       - name: Bump version
         id: bump_version
