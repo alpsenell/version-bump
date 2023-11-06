@@ -8,7 +8,7 @@ on:
 jobs:
   job_one:
     name: "Version Update"
-    runs-on: self-runner-node16
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
