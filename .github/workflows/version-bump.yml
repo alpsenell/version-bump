@@ -59,4 +59,4 @@ jobs:
          git config --global user.email "alpsenel@outlook.com"
          git config --global user.name "alpsenell"
       - run: git merge origin/develop
-      - run: git push https://${{secrets.GH_ACTION_TOKEN}}@github.com/useinsider/insider-design-system.git master
+      - run: git push https://${{secrets.GH_ACTION_TOKEN}}@github.com/alpsenell/version-bump.git main
