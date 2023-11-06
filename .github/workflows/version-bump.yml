@@ -48,4 +48,4 @@ jobs:
           git config --local user.name "alpsenell"
           git add package.json
           git commit -m "ci: Bump version to ${{ steps.bump_version.outputs.NEW_VERSION }}"
-          git push https://${{ secrets.GH_ACTION_TOKEN }}@github.com/alpsenell/gh-action-bump-version.git HEAD:main
+          git push https://${{ secrets.GH_ACTION_TOKEN }}@github.com/alpsenell/version-bump.git HEAD:main
