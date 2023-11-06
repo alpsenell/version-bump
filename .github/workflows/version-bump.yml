@@ -8,7 +8,7 @@ on:
 jobs:
   job_one:
     name: "Version Update"
-    runs-on: self-runner-node16
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -51,12 +51,21 @@ jobs:
   job_two:
     needs: [job_one]
     name: "Merge Develop to Master"
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - run: git checkout master
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - run: git checkout main
       - run: |
-         git config --global user.email "alpsenel@outlook.com"
-         git config --global user.name "alpsenell"
+          git config --global user.email "alpsenel@outlook.com"
+          git config --global user.name "alpsenell"
       - run: git merge origin/develop
       - run: git push https://${{secrets.GH_ACTION_TOKEN}}@github.com/alpsenell/version-bump.git main
