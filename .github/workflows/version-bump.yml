@@ -1,31 +1,25 @@
-name: Increment Version
+name: Develop Workflow
 
 on:
   push:
     branches:
-      - main # Adjust to match the default branch of your repository
+      - develop
 
 jobs:
-  version-bump:
-    runs-on: ubuntu-latest
+  job_one:
+    name: "Version Update"
+    runs-on: self-runner-node16
     steps:
-      # Check out the repository code
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0 # Fetch all history for all tags and branches
+          fetch-depth: 0
 
-      # List files in the checked-out repository (for debugging purposes)
-      - name: List files
-        run: ls -lR
-
-      # Set up the Node.js environment
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16' # Ensure this matches the version you use locally
+          node-version: '16'
 
-      # Increment the package version
       - name: Bump version
         id: bump_version
         run: |
@@ -44,11 +38,25 @@ jobs:
           echo "::set-output name=NEW_VERSION::$NEW_VERSION"
           npm version $NEW_VERSION --no-git-tag-version
 
-      # Commit the updated package.json and push it back to the repository
       - name: Commit and push
         run: |
-          git config --local user.email "alpsenel@outlook.com"
-          git config --local user.name "alpsenell"
+          git config --global user.email "alpsenel@outlook.com"
+          git config --global user.name "Emrah Polatcan"
           git add package.json
           git commit -m "ci: Bump version to ${{ steps.bump_version.outputs.NEW_VERSION }}"
-          git push https://${{ secrets.GH_ACTION_TOKEN }}@github.com/alpsenell/version-bump.git HEAD:main
+          git push origin develop
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_ACTION_TOKEN }}
+
+  job_two:
+    needs: [job_one]
+    name: "Merge Develop to Master"
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v3
+      - run: git checkout master
+      - run: |
+          git config --global user.email "alpsenel@outlook.com"
+          git config --global user.name "alpsenell"
+      - run: git merge origin/develop
+      - run: git push https://${{secrets.GH_ACTION_TOKEN}}@github.com/alpsenell/version-bump.git main
