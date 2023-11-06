@@ -36,7 +36,14 @@ jobs:
           PACKAGE_VERSION=$(node -p "require('./package.json').version")
           IFS='.' read -ra VERSION_PARTS <<< "$PACKAGE_VERSION"
           PATCH_VERSION=$((VERSION_PARTS[2] + 1))
-          NEW_VERSION="${VERSION_PARTS[0]}.${VERSION_PARTS[1]}.$PATCH_VERSION"
+          if [[ "${VERSION_PARTS[2]}" -eq 99 ]]; then
+              MINOR_VERSION=$((VERSION_PARTS[1] + 1))
+              PATCH_VERSION=0
+          else
+              PATCH_VERSION=$((VERSION_PARTS[2] + 1))
+              MINOR_VERSION=${VERSION_PARTS[1]}
+          fi
+          NEW_VERSION="${VERSION_PARTS[0]}.$MINOR_VERSION.$PATCH_VERSION"
           echo "New version: $NEW_VERSION"
           echo "::set-output name=NEW_VERSION::$NEW_VERSION"
           npm version $NEW_VERSION --no-git-tag-version
